@@ -33,7 +33,7 @@ Open `frontend/index.html` in a browser, or serve statically:
 
 ```bash
 cd web_platform/frontend
-python -m http.server 8080
+python -m http.server 5500
 ```
 
 Point the frontend API base URL at the backend (see `app.js`).
