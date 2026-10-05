@@ -75,3 +75,62 @@ def resolve_ticket(ticket_id: str):
 @admin_bp.get("/health")
 def health():
     return jsonify({"status": "ok", "component": "admin_api"})
+
+
+@admin_bp.get("/tools")
+def list_tools():
+    """List tool permissions for one agent (query: ?agent=maintenance_release)."""
+    agent = request.args.get("agent") or request.args.get("agent_name")
+    if not agent:
+        return jsonify({"error": "query param agent is required"}), 400
+    try:
+        from state_graph.tool_registry import list_agent_tools
+
+        tools = list_agent_tools(agent)
+        return jsonify(
+            {
+                "agent": agent,
+                "tools": [
+                    {
+                        "agent_name": t.agent_name,
+                        "tool_name": t.tool_name,
+                        "is_enabled": t.is_enabled,
+                    }
+                    for t in tools
+                ],
+            }
+        )
+    except Exception as exc:
+        return jsonify({"error": str(exc), "tools": []}), 200
+
+
+@admin_bp.post("/tools")
+def set_tool():
+    """Enable or disable one tool for one agent."""
+    body = request.get_json(force=True, silent=True) or {}
+    agent = body.get("agent_name") or body.get("agent")
+    tool = body.get("tool_name") or body.get("tool")
+    enabled = body.get("is_enabled")
+    updated_by = body.get("updated_by") or "platform_admin"
+    if not agent or not tool or enabled is None:
+        return jsonify({"error": "agent_name, tool_name, is_enabled required"}), 400
+    try:
+        from state_graph.tool_registry import set_tool_permission
+
+        set_tool_permission(
+            agent_name=agent,
+            tool_name=tool,
+            is_enabled=bool(enabled),
+            updated_by=updated_by,
+        )
+        return jsonify(
+            {
+                "ok": True,
+                "agent_name": agent,
+                "tool_name": tool,
+                "is_enabled": bool(enabled),
+            }
+        )
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
