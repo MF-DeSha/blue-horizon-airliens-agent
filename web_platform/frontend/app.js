@@ -1,5 +1,5 @@
 /**
- * Blue Horizon Platform frontend (Adel)
+ * Blue Horizon Platform frontend 
  * Talks to the platform backend API.
  */
 
