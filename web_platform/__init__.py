@@ -1,1 +1,1 @@
-"""Blue Horizon platform package (Adel)."""
+"""Blue Horizon platform package ."""
