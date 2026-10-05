@@ -130,3 +130,27 @@ footer {
   font-size: 0.8rem;
   text-align: center;
 }
+
+/* Start-agent form grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+.form-grid h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+.form-grid .result {
+  margin-top: 0.75rem;
+  max-height: 200px;
+}
+.tool-row {
+  margin: 0.35rem 0 !important;
+  font-size: 0.85rem;
+}
