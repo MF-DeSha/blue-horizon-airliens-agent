@@ -125,12 +125,15 @@ def resolve_admin_task(
     try:
         from state_graph.hitl import resolve_admin_task as _resolve
 
+        # hitl.resolve_admin_task accepts only approved | rejected
+        hitl_decision = "approved" if decision == "approved" else "rejected"
+
         task = _resolve(
             task_id=task_id,
-            decision=decision,
+            decision=hitl_decision,
             decided_by=decided_by,
-            comment=comment,
-            payload=payload,
+            decision_comment=comment or "",
+            decision_payload=payload or {},
         )
     except Exception:
         task = {
@@ -150,6 +153,9 @@ def resolve_admin_task(
             "admin_decision": decision,
             "admin_comment": comment or "",
             "admin_decided_by": decided_by,
+            # Maintenance graph reads these keys (not admin_decision alone)
+            "operations_decision": "approved" if decision == "approved" else "rejected",
+            "operations_manager_id": decided_by if str(decided_by).startswith("ops_manager_") else "ops_manager_demo",
         }
         if payload:
             data_updates.update(payload)
@@ -221,3 +227,6 @@ def _state_to_dict(state: Any) -> dict[str, Any]:
         "last_error": getattr(state, "last_error", None),
         "checkpoint_number": getattr(state, "checkpoint_number", 0),
     }
+
+
+
