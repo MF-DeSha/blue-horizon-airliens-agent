@@ -9,74 +9,111 @@
 <body>
   <header>
     <h1>Blue Horizon Platform</h1>
-    <p class="subtitle">Agents · HITL · Tickets · Safety</p>
+    <p class="subtitle">Agents · HITL · Tickets · External waits</p>
     <nav>
       <button data-view="dashboard" class="active">Dashboard</button>
       <button data-view="agents">Agents</button>
+      <button data-view="start">Start Agent</button>
       <button data-view="hitl">HITL Review</button>
       <button data-view="tickets">Tickets</button>
-      <button data-view="safety">New Safety Incident</button>
     </nav>
   </header>
 
   <main>
     <section id="view-dashboard" class="view active">
       <h2>Dashboard</h2>
+      <p class="hint">All workflow runs. Waiting runs show an Inject button for external reports / documents / payment results.</p>
       <div id="health-status" class="card">Checking API…</div>
       <div id="recent-runs" class="card-list"></div>
     </section>
 
     <section id="view-agents" class="view">
-      <h2>Agents</h2>
+      <h2>Agents &amp; tool permissions</h2>
+      <p class="hint">Enable / disable MCP tools per agent. Changes apply on the next tool call — no redeploy.</p>
       <div id="agents-list" class="card-list"></div>
     </section>
 
+    <section id="view-start" class="view">
+      <h2>Start an agent</h2>
+      <p class="hint">One place to start any of the three state-graph agents.</p>
+
+      <div class="form-grid">
+        <form id="maintenance-form" class="card">
+          <h3>Maintenance Release</h3>
+          <p class="hint">Mostafa — wait for maintenance report + ops approval</p>
+          <label>Flight number <input name="flight_number" value="BH202" required /></label>
+          <label>Requested by <input name="requested_by" value="platform_user" /></label>
+          <button type="submit">Start Maintenance Agent</button>
+          <pre class="result hidden" id="maintenance-result"></pre>
+        </form>
+
+        <form id="compensation-form" class="card">
+          <h3>Compensation Appeal</h3>
+          <p class="hint">Zizo — documents, ToT strategies, HITL if amount &gt; $500</p>
+          <label>Flight number <input name="flight_number" value="BH202" required /></label>
+          <label>Passenger email <input name="passenger_email" type="email" value="passenger@example.com" /></label>
+          <label>Appeal reason <input name="appeal_reason" value="Amount did not reflect platinum tier" /></label>
+          <label>Requested amount (USD) <input name="requested_amount" type="number" step="0.01" value="750" /></label>
+          <label>Loyalty tier
+            <select name="loyalty_tier">
+              <option>unknown</option>
+              <option>silver</option>
+              <option>gold</option>
+              <option selected>platinum</option>
+            </select>
+          </label>
+          <label>Requested by <input name="requested_by" value="platform_user" /></label>
+          <button type="submit">Start Compensation Agent</button>
+          <pre class="result hidden" id="compensation-result"></pre>
+        </form>
+
+        <form id="safety-form" class="card">
+          <h3>Safety Incident</h3>
+          <p class="hint">Adel — evidence, LATS paths, safety-manager HITL</p>
+          <label>Flight number <input name="flight_number" value="BH202" required /></label>
+          <label>Incident type
+            <select name="incident_type">
+              <option>bird_strike</option>
+              <option>runway_incursion</option>
+              <option>system_failure</option>
+              <option>smoke_or_fire</option>
+              <option>medical_emergency</option>
+              <option>turbulence_injury</option>
+              <option>other</option>
+            </select>
+          </label>
+          <label>Severity
+            <select name="severity">
+              <option>low</option>
+              <option selected>medium</option>
+              <option>high</option>
+              <option>critical</option>
+            </select>
+          </label>
+          <label>Description <textarea name="description" rows="2"></textarea></label>
+          <label class="checkbox"><input type="checkbox" name="has_passenger_impact" /> Passenger impact</label>
+          <button type="submit">Start Safety Incident Agent</button>
+          <pre class="result hidden" id="safety-result"></pre>
+        </form>
+      </div>
+    </section>
+
     <section id="view-hitl" class="view">
-      <h2>HITL — Safety Manager Review</h2>
-      <p class="hint">Review draft reports, approve or request changes. The graph resumes from the current checkpoint.</p>
+      <h2>HITL Review</h2>
+      <p class="hint">Approve or reject pending admin tasks. The graph resumes from the current checkpoint.</p>
       <div id="hitl-tasks" class="card-list"></div>
       <div id="hitl-detail" class="card hidden"></div>
     </section>
 
     <section id="view-tickets" class="view">
       <h2>Failure Tickets</h2>
-      <p class="hint">Resolve tickets from the dashboard; workflow resumes without restarting.</p>
+      <p class="hint">Resolve tickets; workflow resumes from the failed node without restarting from the top.</p>
       <div id="tickets-list" class="card-list"></div>
-    </section>
-
-    <section id="view-safety" class="view">
-      <h2>Start Safety Incident</h2>
-      <form id="safety-form" class="card">
-        <label>Flight number <input name="flight_number" value="BH202" required /></label>
-        <label>Incident type
-          <select name="incident_type">
-            <option>bird_strike</option>
-            <option>runway_incursion</option>
-            <option>system_failure</option>
-            <option>smoke_or_fire</option>
-            <option>medical_emergency</option>
-            <option>turbulence_injury</option>
-            <option>other</option>
-          </select>
-        </label>
-        <label>Severity
-          <select name="severity">
-            <option>low</option>
-            <option selected>medium</option>
-            <option>high</option>
-            <option>critical</option>
-          </select>
-        </label>
-        <label>Description <textarea name="description" rows="3"></textarea></label>
-        <label class="checkbox"><input type="checkbox" name="has_passenger_impact" /> Passenger impact</label>
-        <button type="submit">Start Safety Incident Agent</button>
-      </form>
-      <pre id="safety-result" class="card hidden"></pre>
     </section>
   </main>
 
   <footer>
-    <span>Adel — Safety Incident Agent &amp; Full Platform</span>
+    <span>Blue Horizon — State Graph Agents &amp; Platform · Mostafa · Zizo · Adel</span>
   </footer>
   <script src="app.js"></script>
 </body>
