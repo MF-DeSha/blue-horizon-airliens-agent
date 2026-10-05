@@ -1,4 +1,4 @@
-# Blue Horizon Platform (Adel)
+# Blue Horizon Platform 
 
 Full platform layer: backend APIs + User/Admin frontend for Agents, HITL, and Tickets.
 
