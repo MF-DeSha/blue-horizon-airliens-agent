@@ -1,5 +1,5 @@
 """
-Blue Horizon Platform backend entry point (Adel).
+Blue Horizon Platform backend entry point.
 
 Run from project root:
     PYTHONPATH=. python -m platform.backend.app
